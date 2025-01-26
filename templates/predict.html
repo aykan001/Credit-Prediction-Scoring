@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kredi Tahmin Formu</title>
+
+    <!-- Bootstrap ve Font Awesome -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, rgba(0, 128, 128, 0.8), rgba(0, 83, 172, 0.8)), url('https://source.unsplash.com/1920x1080/?finance');
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 60px;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .blur-background {
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.85);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;  
+        }
+
+        .blur-background:hover {
+            transform: translateY(-10px); 
+            box-shadow: 0px 4px 20px rgba(255, 255, 255, 0.5); 
+        }
+
+        .container {
+            max-width: 900px;
+            margin-top: 50px;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.5s ease, box-shadow 0.5s ease;  
+        }
+
+        .container.shifted {
+            transform: translateX(300px);
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+
+        .form-group select {
+            background-color: #f9f9f9;
+            padding: 3px;
+            color: #333;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #00c7b1;
+        }
+
+        .btn-primary {
+            background-color: #00c7b1;
+            border-color: #00c7b1;
+        }
+
+        .btn-primary:hover {
+            background-color: #74b0ed;
+        }
+
+        .text-center {
+            color: #0053ac;
+        }
+
+        .menu-button {
+            position: fixed;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 80px;
+            height: 80px;
+            background-color: #00c7b1;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .menu-button.open {
+            transform: translateY(-50%) translateX(300px);
+        }
+
+        .circular-menu {
+            position: fixed;
+            top: 50%;
+            left: -300px;
+            transform: translateY(-50%);
+            width: 300px;
+            height: 100%;
+            background: linear-gradient(135deg, #00c7b1, #0053ac);
+            border-top-right-radius: 400px;
+            border-bottom-right-radius: 400px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: left 0.5s ease;
+            z-index: 999;
+        }
+
+        .circular-menu.open {
+            left: 0;
+        }
+
+        .menu-item {
+            margin: 20px 0;
+            font-size: 18px;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .menu-item:hover {
+            color: #74b0ed;
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            display: none;
+        }
+
+        .menu-overlay.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Circular Menu Button -->
+<div class="menu-button" id="menuButton">
+    <i class="fas fa-bars"></i>
+</div>
+
+<!-- Circular Menu -->
+<div class="circular-menu" id="circularMenu">
+    <a href="/predict" class="menu-item"><i class="fas fa-home"></i> Ana Sayfa</a>
+    <a href="/past_credit_forecast" class="menu-item"><i class="fas fa-history"></i> Geçmiş Tahmin</a>
+    <a href="/portfoy" class="menu-item"><i class="fas fa-briefcase"></i> Genel Portföy</a>
+    <a href="/" class="menu-item"><i class="fas fa-sign-out-alt"></i> Çıkış</a>
+</div>
+
+<!-- Menu Overlay -->
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<!-- Kredi Tahmin Formu -->
+<div class="container blur-background" id="formContainer">
+    <h2 class="text-center mb-4">Kredi Tahmin Formu</h2>
+    <p class="text-center mb-4">Formdaki bilgileri doldurun ve kredi skorunuzu tahmin edelim.</p>
+
+    <form action="/predict" method="POST">
+        <div class="form-group">
+            <input type="text" id="ID" name="ID" class="form-control" placeholder="T.C. Kimlik Numarası" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="Name" name="Name" class="form-control" placeholder="İsim Soyisim" required>
+        </div>
+        <div class="form-group">
+            <input type="number" id="Age" name="Age" class="form-control" placeholder="Yaş" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="SSN" name="SSN" class="form-control" placeholder="SGK No (Sosyal Güvenlik Numarası)" required>
+        </div>
+        <div class="form-group">
+            <label for="Occupation">Meslek</label>
+            <select id="Occupation" name="Occupation" class="form-control" required>
+                <option value="" disabled selected>Meslek Seçin</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="number" id="Annual_Income" name="Annual_Income" class="form-control" placeholder="Yıllık Gelir" required>
+        </div>
+        <div class="form-group">
+            <input type="number" id="Monthly_Inhand_Salary" name="Monthly_Inhand_Salary" class="form-control" placeholder="Aylık Maaş" required>
+        </div>
+        <div class="form-group">
+            <input type="number" id="Num_Bank_Accounts" name="Num_Bank_Accounts" class="form-control" placeholder="Bankada Hesap Sayısı" required>
+        </div>
+        <div class="form-group">
+            <input type="number" id="Num_Credit_Card" name="Num_Credit_Card" class="form-control" placeholder="Kredi Kartı Sayısı" required>
+        </div>
+        <div class="form-group">
+            <input type="number" id="Num_of_Loan" name="Num_of_Loan" class="form-control" placeholder="Mevcut Kredi Sayısı" required>
+        </div>
+        <div class="form-group">
+            <input type="number" id="Delay_from_due_date" name="Delay_from_due_date" class="form-control" placeholder="Ödeme Gecikmesi (gün)" required>
+        </div>
+        <div class="form-group">
+            <input type="number" id="Outstanding_Debt" name="Outstanding_Debt" class="form-control" placeholder="Borç Tutarı" required>
+        </div>
+        <div class="form-group">
+            <input type="number" id="Amount_invested_monthly" name="Amount_invested_monthly" class="form-control" placeholder="Aylık Yatırım Tutarı" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Gönder</button>
+    </form>
+</div>
+
+<script>
+    async function getOccupations() {
+        try {
+            const response = await fetch('/static/meslekler.txt');
+            const text = await response.text();
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+            const selectElement = document.getElementById('Occupation');
+            
+            lines.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item;
+                option.textContent = item;
+                selectElement.appendChild(option);
+            });
+        } catch (err) {
+            console.error('Meslekler yüklenirken bir sorun oluştu:', err);
+        }
+    }
+
+    window.addEventListener('load', function() {
+        getOccupations();
+    });
+
+    const menuButton = document.getElementById('menuButton');
+    const circularMenu = document.getElementById('circularMenu');
+    const menuOverlay = document.getElementById('menuOverlay');
+    const formContainer = document.getElementById('formContainer');
+
+    menuButton.addEventListener('click', function() {
+        const isOpen = circularMenu.classList.toggle('open');
+        menuOverlay.classList.toggle('show', isOpen);
+        formContainer.classList.toggle('shifted', isOpen);
+        menuButton.classList.toggle('open', isOpen);
+    });
+
+    menuOverlay.addEventListener('click', function() {
+        circularMenu.classList.remove('open');
+        menuOverlay.classList.remove('show');
+        formContainer.classList.remove('shifted');
+        menuButton.classList.remove('open');
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

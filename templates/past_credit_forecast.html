@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geçmiş Kredi Sonuçları</title>
+    <!-- Bootstrap CSS bağlantısı -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJjR8cF5z3LU3vNVVpPZGqVllYJb8ALntQ8vqT5PqfFfHIFc8zPfjNklH1Bx" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: #fff;
+            padding-top: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            margin-top: 30px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            background-color: #ffffff;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card-header {
+            background-color: #1abc9c;
+            color: white;
+            text-align: center;
+            font-size: 1.6rem;
+            padding: 20px;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table thead {
+            background-color: #1abc9c;
+            color: white;
+        }
+
+        .table-striped tbody tr:nth-child(odd) {
+            background-color: #f1f4f8;
+        }
+
+        .btn-delete {
+            background-color: #e74a3b;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+
+        .custom-result-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+
+        .result-date {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #3498db;
+        }
+
+        .result-status {
+            background-color: #28a745;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .result-actions {
+            text-align: center;
+        }
+
+        /* Circular Menu */
+        .menu-button {
+            position: fixed;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #f4b860, #3498db);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .menu-button.open {
+            transform: translateY(-50%) translateX(230px);
+        }
+
+        .circular-menu {
+            position: fixed;
+            top: 50%;
+            left: -300px;
+            transform: translateY(-50%);
+            width: 300px;
+            height: 100%;
+            background: linear-gradient(135deg, #3498db, #f4b860, #2c3e50);
+            border-top-right-radius: 400px;
+            border-bottom-right-radius: 400px;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: left 0.5s ease;
+            z-index: 999;
+        }
+
+        .circular-menu.open {
+            left: 0;
+        }
+
+        .menu-item {
+            margin: 25px 0;
+            font-size: 20px;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .menu-item i {
+            margin-right: 12px;
+            font-size: 24px;
+        }
+
+        .menu-item:hover {
+            color: #f4b860;
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            display: none;
+        }
+
+        .menu-overlay.show {
+            display: block;
+        }
+
+        .bottom-buttons {
+            position: fixed;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1001;
+        }
+
+        .bottom-button {
+            background: linear-gradient(135deg, #3498db, #f4b860);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .bottom-button:hover {
+            background: linear-gradient(135deg, #2c3e50, #f4b860);
+            transform: translateY(-5px);
+        }
+
+        .bottom-button i {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                Geçmiş Kredi Sonuçları
+            </div>
+            <div class="card-body">
+                {% if results %}
+                    <div>
+                        {% for result in results %}
+                            <div class="custom-result-box">
+                                <div class="result-date">{{ result.date }}</div>
+                                <div class="result-status">{{ result.result }}</div>
+                                <div class="result-actions">
+                                    <form action="{{ url_for('delete_result', result_id=result.id) }}" method="POST">
+                                        <button type="submit" class="btn-delete btn btn-sm">
+                                            <i class="fas fa-trash"></i> Sil
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning text-center custom-alert">
+                        <i class="fas fa-exclamation-triangle"></i> Henüz geçmiş sonuç bulunmamaktadır.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="menu-button" id="menuButton">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <div class="circular-menu" id="circularMenu">
+        <a href="/predict" class="menu-item"><i class="fas fa-home"></i> Ana Sayfa</a>
+        <a href="/past_credit_forecast" class="menu-item"><i class="fas fa-history"></i> Geçmiş Tahmin</a>
+        <a href="/portfoy" class="menu-item"><i class="fas fa-briefcase"></i> Genel Portföy</a>
+        <a href="/" class="menu-item"><i class="fas fa-sign-out-alt"></i> Çıkış</a>
+    </div>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="bottom-buttons">
+        <a href="/predict" class="bottom-button"><i class="fas fa-calculator"></i> Kredi Formu</a>
+        <a href="/portfoy" class="bottom-button"><i class="fas fa-briefcase"></i> Genel Portföy</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gyb2p3dxeXTY8Y+N0WxW6FQ++6JUlR7nJbQm" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0G3p3v5hf0M+zY3tY3ybvnB6F93zF0vytz4HZ59gBi+X55Bz" crossorigin="anonymous"></script>
+
+    <script>
+        document.getElementById('menuButton').addEventListener('click', function () {
+            document.getElementById('circularMenu').classList.toggle('open');
+            document.getElementById('menuButton').classList.toggle('open');
+            document.getElementById('menuOverlay').classList.toggle('show');
+        });
+
+        document.getElementById('menuOverlay').addEventListener('click', function () {
+            document.getElementById('circularMenu').classList.remove('open');
+            document.getElementById('menuButton').classList.remove('open');
+            document.getElementById('menuOverlay').classList.remove('show');
+        });
+    </script>
+</body>
+
+</html>

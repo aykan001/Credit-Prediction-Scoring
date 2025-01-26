@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kayıt Ol</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap">
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, rgba(0, 128, 128, 0.8), rgba(0, 83, 172, 0.8)), url('https://source.unsplash.com/1920x1080/?finance');
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .register-container {
+            background: #fff;
+            padding: 40px;
+            width: 500px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .register-container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.6), 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .register-container h2 {
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #f9f9f9;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #ff8a00;
+            box-shadow: 0 0 10px rgba(255, 138, 0, 0.5);
+            outline: none;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #ff8a00, #ff5e62);
+            color: #fff;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background: linear-gradient(90deg, #ff9a00, #ff6f61);
+            transform: scale(1.05);
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 15px;
+            color: #ff5722;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: #ff784e;
+        }
+
+        .flash-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+<div class="register-container">
+    <h2>Yeni Kullanıcı Kayıt</h2>
+
+    <!-- Flash mesajlar -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('register') }}" id="register-form">
+        <div class="form-group">
+            <label for="username">Kullanıcı Adı</label>
+            <input type="text" id="username" name="username" placeholder="Kullanıcı Adınızı Girin" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">E-posta</label>
+            <input type="email" id="email" name="email" placeholder="E-posta Adresinizi Girin" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Şifre</label>
+            <input type="password" id="password" name="password" placeholder="Şifrenizi Girin" required>
+        </div>
+
+        <div class="form-group">
+            <label for="confirm_password">Şifre Onayı</label>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Şifrenizi Doğrulayın" required>
+        </div>
+
+        <input type="submit" value="Kayıt Ol">
+    </form>
+
+    <a href="{{ url_for('login') }}">Giriş Yap</a>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyB_0NbcuYEi08PENLXUh0y5AZC5H4k5AiE",
+        authDomain: "kredi-tahmin.firebaseapp.com",
+        projectId: "kredi-tahmin",
+        storageBucket: "kredi-tahmin.appspot.com",
+        messagingSenderId: "1088046219811",
+        appId: "1:1088046219811:web:d49d70c28214bbc6c9a796",
+        measurementId: "G-G7WQBSC3HV"
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore(app);
+
+    document.getElementById('register-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+
+        if (password !== confirmPassword) {
+            alert("Şifreler uyuşmuyor!");
+            return;
+        }
+
+        db.collection("users").add({
+            username: username,
+            email: email,
+            password: password
+        })
+        .then(() => {
+            alert("Kayıt başarıyla tamamlandı!");
+            document.getElementById('register-form').reset();
+        })
+        .catch((error) => {
+            console.error("Kayıt işlemi sırasında hata oluştu: ", error);
+            alert("Bir hata oluştu. Lütfen tekrar deneyin.");
+        });
+    });
+</script>
+</body>
+</html>
+

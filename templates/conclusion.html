@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kredi Skoru Sonuçları</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, rgba(0, 128, 128, 0.8), rgba(0, 83, 172, 0.8)), url('https://source.unsplash.com/1920x1080/?finance');
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 60px;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin-top: 50px;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 240, 240, 0.9));
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 128, 128, 0.5);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, rgba(0, 128, 128, 0.9), rgba(0, 83, 172, 0.9));
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, rgba(0, 150, 150, 0.9), rgba(0, 100, 200, 0.9));
+        }
+
+        .text-center {
+            color: #0053ac;
+        }
+
+        .box {
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .box h4 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .box.low {
+            background: linear-gradient(135deg, rgba(255, 102, 102, 0.9), rgba(255, 153, 153, 0.9));
+        }
+
+        .box.medium {
+            background: linear-gradient(135deg, rgba(255, 204, 102, 0.9), rgba(255, 229, 153, 0.9));
+        }
+
+        .box.high {
+            background: linear-gradient(135deg, rgba(102, 255, 102, 0.9), rgba(153, 255, 153, 0.9));
+        }
+
+        .box.default {
+            background: linear-gradient(135deg, rgba(240, 240, 240, 0.9), rgba(255, 255, 255, 0.9));
+        }
+
+        .menu-button {
+            position: fixed;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(0, 128, 128, 0.8), rgba(0, 83, 172, 0.8));
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .menu-button.open {
+            transform: translateY(-50%) translateX(300px);
+        }
+
+        .circular-menu {
+            position: fixed;
+            top: 50%;
+            left: -300px;
+            transform: translateY(-50%);
+            width: 300px;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 128, 128, 0.8), rgba(0, 83, 172, 0.8));
+            border-top-right-radius: 400px;
+            border-bottom-right-radius: 400px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: left 0.5s ease;
+            z-index: 999;
+        }
+
+        .circular-menu.open {
+            left: 0;
+        }
+
+        .menu-item {
+            margin: 20px 0;
+            font-size: 18px;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .menu-item:hover {
+            color: #74b0ed;
+        }
+
+        .extra-buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .extra-buttons {
+            background: linear-gradient(135deg, rgba(0, 128, 128, 0.8), rgba(0, 83, 172, 0.8));
+            padding: 15px 25px;
+            color: white;
+            font-size: 18px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .extra-buttons:hover {
+            background: linear-gradient(135deg, rgba(0, 150, 150, 0.8), rgba(0, 100, 200, 0.8));
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="mt-5 text-center">Kredi Skoru Sonuçları</h2>
+        <div class="box {{ box_color }}">
+            <h4>Kredi Skoru: {{ result }}</h4>
+        </div>
+    </div>
+
+    <!-- Butonlar dışarıda ve ortalanmış şekilde -->
+    <div class="extra-buttons-container">
+        <a href="/predict" class="extra-buttons"><i class="fas fa-file-alt"></i> Kredi Formu</a>
+        <a href="/portfoy" class="extra-buttons"><i class="fas fa-briefcase"></i> Genel Portföy</a>
+    </div>
+
+    <!-- Circular Menu Button -->
+    <div class="menu-button" id="menuButton">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Circular Menu -->
+    <div class="circular-menu" id="circularMenu">
+        <a href="/predict" class="menu-item"><i class="fas fa-home"></i> Ana Sayfa</a>
+        <a href="/past_credit_forecast" class="menu-item"><i class="fas fa-history"></i> Geçmiş Tahmin</a>
+        <a href="/portfoy" class="menu-item"><i class="fas fa-briefcase"></i> Genel Portföy</a>
+        <a href="/" class="menu-item"><i class="fas fa-sign-out-alt"></i> Çıkış</a>
+    </div>
+
+    <!-- Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <script>
+        document.getElementById('menuButton').addEventListener('click', function() {
+            document.getElementById('circularMenu').classList.toggle('open');
+            document.getElementById('menuOverlay').classList.toggle('show');
+        });
+
+        document.getElementById('menuOverlay').addEventListener('click', function() {
+            document.getElementById('circularMenu').classList.remove('open');
+            document.getElementById('menuOverlay').classList.remove('show');
+        });
+    </script>
+</body>
+</html>
