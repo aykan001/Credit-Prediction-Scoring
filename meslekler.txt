@@ -1,0 +1,67 @@
+Doktor
+Bilgisayar Mühendisi
+Öğretmen
+Hemşire
+Avukat
+Programcı
+Veri Bilimci
+İç Mimar
+Elektrik Teknikeri
+Makine Mühendisi
+İnşaat Mühendisi
+Bankacı
+Yönetici
+Satış Temsilcisi
+Pazarlamacı
+Grafik Tasarımcı
+Muhasebeci
+Kamu Görevlisi
+Hekim
+Eczacı
+Fizyoterapist
+Psikolog
+Kimyager
+Veteriner
+Çalışma Ekonomisti
+Sistem Analisti
+Bilgisayar Mühendisi
+Diş Hekimi
+Pilot
+Kaptan
+Barmen
+Aşçı
+Restoran Yöneticisi
+Turizm Rehberi
+Hava Trafik Kontrolörü
+İçişleri Uzmanı
+İnsan Kaynakları Uzmanı
+Kalite Kontrol Uzmanı
+Lojistik Yöneticisi
+İhracat Uzmanı
+İthalat Uzmanı
+Operatör
+Proje Yöneticisi
+Etkinlik Planlayıcı
+Medya Yöneticisi
+Reklamcı
+Tasarımcı
+Müzisyen
+Fotoğrafçı
+Sinema Yönetmeni
+Yazar
+Şair
+Terzi
+Berber
+Kuaför
+Güzellik Salonu Çalışanı
+Araştırmacı
+Bilim İnsanı
+Antrenör
+Fitness Eğitmeni
+Açık Hava Rehberi
+İstanbul Şoförü
+Elektronik Teknikeri
+Bilişim Uzmanı
+Hesap Uzmanı
+Yazılım Mühendisi
+
